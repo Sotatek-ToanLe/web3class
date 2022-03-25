@@ -23,6 +23,25 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.dflex { 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5rem;
+}
+.left { 
+  text-align: left;
+  padding: 0 5rem;
+}
+.btn { 
+  width: 100px;
+  height: 30px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 20px
+}
 
 .App-link {
   color: #61dafb;
