@@ -7,8 +7,34 @@ import Masterchef from './ERC20.json';
 import WETH from './WETH.json';
 import Web3 from 'web3';
 import { Multicall } from 'ethereum-multicall';
-import  ModalDialog from './component/dialog';
+import ModalDialog from './component/dialog';
+import CustomizedTables from './component/table';
 import { Button } from '@material-ui/core';
+import { createClient  } from 'urql';
+
+const APIURL = "https://api.thegraph.com/subgraphs/name/sotatek-toanle/web3class";
+const client = createClient({
+  url: APIURL,
+});
+
+const Query = `query {
+     depositEntities(first: 5) {
+      id
+      src
+      amount
+      time
+    }
+     withdrawEntities(first: 5) {
+    id 
+    src
+    amount
+    time
+  }
+   
+  }`
+
+
+
 function App() {
   const { activate, account, library, chainId } = useWeb3React();
   const [balanceWeth, setBalance] = useState();
@@ -17,6 +43,9 @@ function App() {
   const [isApprove, setApprove] = useState(0);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState();
+  const [tokens, setTokens] = useState([]);
+
+ 
   
   const connectMetamask = () => { 
     activate(injected);
@@ -67,6 +96,18 @@ function App() {
       console.log('error:', error)
     }
 }
+
+  useEffect(() => {
+    if (account) {
+      
+    fetchData()
+    }
+  }, [account])
+ const  fetchData = async () => {
+    const response = await client.query(Query).toPromise();
+    console.log('response:', response)
+    setTokens(response.data.depositEntities);
+  }
 
 
   // const getBalanceWeth = async () => {
@@ -164,6 +205,7 @@ function App() {
     console.log(`harvest success`);
   }
   return (
+ 
     <div className="App">
       <h1>Web3 React</h1>  
       {
@@ -190,8 +232,11 @@ function App() {
         balance={balanceWeth}
         stake={stake}
       />
+
+      { account && <CustomizedTables rows={tokens}/>}
        
-    </div>
+      </div>
+     
   );
 }
 
