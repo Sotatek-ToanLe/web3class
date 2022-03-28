@@ -18,17 +18,12 @@ const client = createClient({
 });
 
 const Query = `query {
-     depositEntities(first: 5) {
-      id
-      src
-      amount
-      time
-    }
-     withdrawEntities(first: 5) {
-    id 
-    src
+  historyEntities(first: 5) {
+    id
+    address
     amount
     time
+    type
   }
    
   }`
@@ -44,6 +39,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState();
   const [tokens, setTokens] = useState([]);
+  const [total, setTotal] = useState();
 
  
   
@@ -69,7 +65,8 @@ function App() {
           contractAddress: multiAddress[1],
           abi: WETH,
           calls: [{ reference: 'wethMethods', methodName: 'balanceOf', methodParameters: [account] },
-             { reference: 'allowance', methodName: 'allowance', methodParameters: [account, multiAddress[2]] }
+            { reference: 'allowance', methodName: 'allowance', methodParameters: [account, multiAddress[2]] },
+            { reference: 'totalStake', methodName: 'totalSupply' }
          ]
         }
       } else { 
@@ -91,7 +88,10 @@ function App() {
     setBalanceDD2(web3.utils.toBN(result.results.MasterChef.callsReturnContext[0].returnValues[0].hex).toString())
     setStake(web3.utils.toBN(result.results.MasterChef.callsReturnContext[1].returnValues[0].hex).toString())
     setApprove(web3.utils.toBN(result.results.Weth.callsReturnContext[1].returnValues[0].hex).toString())
-    console.log('result:', result.results)
+   
+    setTotal(web3.utils.toBN(result.results.Weth.callsReturnContext[2].returnValues[0].hex).toString())
+    console.log('result:', result.results);
+   
     } catch (error) {
       console.log('error:', error)
     }
@@ -106,7 +106,7 @@ function App() {
  const  fetchData = async () => {
     const response = await client.query(Query).toPromise();
     console.log('response:', response)
-    setTokens(response.data.depositEntities);
+    setTokens(response.data.historyEntities);
   }
 
 
@@ -217,6 +217,7 @@ function App() {
           isApprove={isApprove}
           dd2={balanceDD2}
           stake={stake}
+          totalStake={total}
           handleDeposit={handleDeposit}
           handleHarvest={handleHarvest}
         /> : <>

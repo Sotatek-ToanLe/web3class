@@ -41,7 +41,7 @@ export default function CustomizedTables({rows}) {
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
-              <StyledTableCell>Address</StyledTableCell>
+          
             <StyledTableCell>Action</StyledTableCell>
             <StyledTableCell>Amount</StyledTableCell>
             <StyledTableCell>Time</StyledTableCell>
@@ -49,10 +49,8 @@ export default function CustomizedTables({rows}) {
         </TableHead>
         <TableBody>
           {rows?.map((row) => (
-            <StyledTableRow key={row.name}>
-            
-              <StyledTableCell>{row.src}</StyledTableCell>
-                <StyledTableCell>{row.__typename.slice(0, 7)}</StyledTableCell>
+            <StyledTableRow key={row.id}>
+              <StyledTableCell>{row.type}</StyledTableCell>
               <StyledTableCell >{row.amount}</StyledTableCell>
               <StyledTableCell>{moment.unix(row.time).format('HH:MM  MM/DD/YYYY')}</StyledTableCell>
          
